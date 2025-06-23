@@ -11,6 +11,7 @@ const CalculatorApp = () => {
   const [waitingForOperand, setWaitingForOperand] = useState(false);
   const [inputSequence, setInputSequence] = useState<string[]>([]);
   const [showMeanings, setShowMeanings] = useState(false);
+  const [calculationHistory, setCalculationHistory] = useState<Array<{pattern: string, result: string, meaning: string}>>([]);
   const navigate = useNavigate();
 
   // Secret pattern: 777+777=
@@ -26,9 +27,15 @@ const CalculatorApp = () => {
   ];
 
   const checkSecretPattern = (newSequence: string[]) => {
+    console.log('Checking sequence:', newSequence);
+    console.log('Secret pattern:', SECRET_PATTERN);
+    
     if (newSequence.length >= SECRET_PATTERN.length) {
       const lastInputs = newSequence.slice(-SECRET_PATTERN.length);
+      console.log('Last inputs:', lastInputs);
+      
       if (JSON.stringify(lastInputs) === JSON.stringify(SECRET_PATTERN)) {
+        console.log('Secret pattern matched! Navigating to SOS...');
         // Navigate to SOS interface
         navigate('/sos');
         return true;
@@ -39,8 +46,19 @@ const CalculatorApp = () => {
 
   const checkForFakeCalculation = (sequence: string[]) => {
     const sequenceString = sequence.join('');
+    console.log('Checking for fake calculation:', sequenceString);
+    
     for (const meaning of hiddenMeanings) {
       if (sequenceString.endsWith(meaning.pattern)) {
+        console.log('Found fake calculation pattern:', meaning.pattern);
+        
+        // Store this calculation in history
+        setCalculationHistory(prev => [...prev, {
+          pattern: meaning.pattern,
+          result: meaning.fakeResult,
+          meaning: meaning.meaning
+        }]);
+        
         return meaning.fakeResult;
       }
     }
@@ -50,7 +68,9 @@ const CalculatorApp = () => {
   const inputDigit = (digit: string) => {
     const newSequence = [...inputSequence, digit];
     setInputSequence(newSequence);
+    console.log('Input digit:', digit, 'New sequence:', newSequence);
 
+    // Check for secret pattern first (before updating display)
     if (checkSecretPattern(newSequence)) {
       return;
     }
@@ -66,7 +86,9 @@ const CalculatorApp = () => {
   const inputOperation = (nextOperation: string) => {
     const newSequence = [...inputSequence, nextOperation];
     setInputSequence(newSequence);
+    console.log('Input operation:', nextOperation, 'New sequence:', newSequence);
 
+    // Check for secret pattern
     if (checkSecretPattern(newSequence)) {
       return;
     }
@@ -107,6 +129,7 @@ const CalculatorApp = () => {
   const performCalculation = () => {
     const newSequence = [...inputSequence, '='];
     setInputSequence(newSequence);
+    console.log('Perform calculation, sequence:', newSequence);
 
     // Check for fake calculation first
     const fakeResult = checkForFakeCalculation(newSequence);
@@ -118,6 +141,7 @@ const CalculatorApp = () => {
       return;
     }
 
+    // Check for secret pattern after fake calculation check
     if (checkSecretPattern(newSequence)) {
       return;
     }
@@ -205,10 +229,25 @@ const CalculatorApp = () => {
         <Button variant="outline" onClick={() => inputDigit('.')}>.</Button>
       </div>
 
-      {/* Hidden hint for testing (remove in production) */}
+      {/* Hidden hint for testing */}
       <div className="text-xs text-gray-400 text-center mt-4 opacity-20">
         Try: 777+777=
       </div>
+
+      {/* Calculation History */}
+      {calculationHistory.length > 0 && (
+        <div className="mt-6 border-t pt-4">
+          <h3 className="text-sm font-medium text-gray-700 mb-3">Recent Calculations</h3>
+          <div className="space-y-2">
+            {calculationHistory.slice(-3).map((calc, index) => (
+              <div key={index} className="bg-gray-50 p-2 rounded text-sm">
+                <span className="font-mono text-blue-600">{calc.pattern}</span>
+                <span className="text-gray-600 ml-2">= {calc.result}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
 
       {/* Hidden Meanings Preview */}
       <div className="mt-6 border-t pt-4">
