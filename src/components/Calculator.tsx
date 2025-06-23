@@ -1,7 +1,6 @@
-
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
-import { Calculator } from 'lucide-react';
+import { Calculator, Eye, EyeOff } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
 const CalculatorApp = () => {
@@ -10,10 +9,20 @@ const CalculatorApp = () => {
   const [operation, setOperation] = useState<string | null>(null);
   const [waitingForOperand, setWaitingForOperand] = useState(false);
   const [inputSequence, setInputSequence] = useState<string[]>([]);
+  const [showMeanings, setShowMeanings] = useState(false);
   const navigate = useNavigate();
 
   // Secret pattern: 777+777=
   const SECRET_PATTERN = ['7', '7', '7', '+', '7', '7', '7', '='];
+
+  // Hidden meanings for different patterns
+  const hiddenMeanings = [
+    { pattern: '777+777=', meaning: 'Emergency SOS - Immediate help needed' },
+    { pattern: '911×2=', meaning: 'Silent alarm - Danger nearby' },
+    { pattern: '123+456=', meaning: 'Check-in signal - All okay' },
+    { pattern: '000÷1=', meaning: 'Location sharing - Track my position' },
+    { pattern: '555-333=', meaning: 'Medical emergency - Health issue' },
+  ];
 
   const checkSecretPattern = (newSequence: string[]) => {
     if (newSequence.length >= SECRET_PATTERN.length) {
@@ -178,6 +187,35 @@ const CalculatorApp = () => {
       {/* Hidden hint for testing (remove in production) */}
       <div className="text-xs text-gray-400 text-center mt-4 opacity-20">
         Try: 777+777=
+      </div>
+
+      {/* Hidden Meanings Preview */}
+      <div className="mt-6 border-t pt-4">
+        <div className="flex items-center justify-between mb-3">
+          <h3 className="text-sm font-medium text-gray-700">Hidden Patterns</h3>
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => setShowMeanings(!showMeanings)}
+            className="h-8 w-8 p-0"
+          >
+            {showMeanings ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+          </Button>
+        </div>
+        
+        {showMeanings && (
+          <div className="space-y-2">
+            {hiddenMeanings.map((item, index) => (
+              <div key={index} className="bg-gray-50 p-2 rounded text-xs">
+                <span className="font-mono text-blue-600">{item.pattern}</span>
+                <span className="text-gray-600 ml-2">→ {item.meaning}</span>
+              </div>
+            ))}
+            <div className="text-xs text-gray-500 text-center mt-2 italic">
+              Enter these patterns to trigger hidden features
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );
