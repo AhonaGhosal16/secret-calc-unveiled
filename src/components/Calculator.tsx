@@ -146,98 +146,137 @@ const CalculatorApp = () => {
     setInputSequence([]);
   };
 
+  const formatCalculationDisplay = () => {
+    return inputSequence.join(' ') || '0';
+  };
+
   return (
-    <div className="max-w-md mx-auto mt-8 p-6 bg-white rounded-lg shadow-lg">
-      <div className="flex items-center justify-center mb-6">
-        <Calculator className="h-6 w-6 mr-2 text-gray-600" />
-        <h1 className="text-xl font-semibold text-gray-800">Calculator</h1>
-      </div>
-      
-      {/* Display */}
-      <div className="bg-gray-100 p-4 rounded-lg mb-4">
-        <div className="text-right text-2xl font-mono text-gray-800 min-h-[2rem] overflow-hidden">
-          {display}
-        </div>
-      </div>
-
-      {/* Button Grid */}
-      <div className="grid grid-cols-4 gap-2">
-        {/* Row 1 */}
-        <Button variant="secondary" onClick={clear} className="bg-red-100 hover:bg-red-200 text-red-700">
-          C
-        </Button>
-        <Button variant="secondary" onClick={clearEntry} className="bg-orange-100 hover:bg-orange-200 text-orange-700">
-          CE
-        </Button>
-        <Button variant="secondary" onClick={() => inputOperation('÷')} className="bg-blue-100 hover:bg-blue-200 text-blue-700">
-          ÷
-        </Button>
-        <Button variant="secondary" onClick={() => inputOperation('×')} className="bg-blue-100 hover:bg-blue-200 text-blue-700">
-          ×
-        </Button>
-
-        {/* Row 2 */}
-        <Button variant="outline" onClick={() => inputDigit('7')}>7</Button>
-        <Button variant="outline" onClick={() => inputDigit('8')}>8</Button>
-        <Button variant="outline" onClick={() => inputDigit('9')}>9</Button>
-        <Button variant="secondary" onClick={() => inputOperation('-')} className="bg-blue-100 hover:bg-blue-200 text-blue-700">
-          -
-        </Button>
-
-        {/* Row 3 */}
-        <Button variant="outline" onClick={() => inputDigit('4')}>4</Button>
-        <Button variant="outline" onClick={() => inputDigit('5')}>5</Button>
-        <Button variant="outline" onClick={() => inputDigit('6')}>6</Button>
-        <Button variant="secondary" onClick={() => inputOperation('+')} className="bg-blue-100 hover:bg-blue-200 text-blue-700">
-          +
-        </Button>
-
-        {/* Row 4 */}
-        <Button variant="outline" onClick={() => inputDigit('1')}>1</Button>
-        <Button variant="outline" onClick={() => inputDigit('2')}>2</Button>
-        <Button variant="outline" onClick={() => inputDigit('3')}>3</Button>
-        <Button variant="default" onClick={performCalculation} className="row-span-2 bg-green-600 hover:bg-green-700">
-          =
-        </Button>
-
-        {/* Row 5 */}
-        <Button variant="outline" onClick={() => inputDigit('0')} className="col-span-2">0</Button>
-        <Button variant="outline" onClick={() => inputDigit('.')}>.</Button>
-      </div>
-
-      {/* Hidden hint for testing (remove in production) */}
-      <div className="text-xs text-gray-400 text-center mt-4 opacity-20">
-        Try: 777+777=
-      </div>
-
-      {/* Hidden Meanings Preview */}
-      <div className="mt-6 border-t pt-4">
-        <div className="flex items-center justify-between mb-3">
-          <h3 className="text-sm font-medium text-gray-700">Hidden Patterns</h3>
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={() => setShowMeanings(!showMeanings)}
-            className="h-8 w-8 p-0"
-          >
-            {showMeanings ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
-          </Button>
+    <div className="min-h-screen bg-gradient-to-br from-purple-400 via-pink-500 to-red-500 py-8 px-4">
+      <div className="max-w-md mx-auto bg-white/20 backdrop-blur-lg border border-white/30 rounded-3xl shadow-2xl p-8">
+        <div className="flex items-center justify-center mb-8">
+          <Calculator className="h-8 w-8 mr-3 text-white" />
+          <h1 className="text-2xl font-bold text-white">Calculator</h1>
         </div>
         
-        {showMeanings && (
-          <div className="space-y-2">
-            {hiddenMeanings.map((item, index) => (
-              <div key={index} className="bg-gray-50 p-2 rounded text-xs">
-                <span className="font-mono text-blue-600">{item.pattern}</span>
-                <span className="text-gray-600 ml-2">→ {item.meaning}</span>
-                <span className="text-gray-500 ml-2">(shows: {item.fakeResult})</span>
-              </div>
-            ))}
-            <div className="text-xs text-gray-500 text-center mt-2 italic">
-              Enter these patterns to see fake results and trigger hidden features
-            </div>
+        {/* Display */}
+        <div className="bg-black/20 backdrop-blur-sm border border-white/20 rounded-2xl p-6 mb-6">
+          {/* Full calculation display */}
+          <div className="text-white/70 text-sm font-mono mb-2 min-h-[1.5rem] text-right">
+            {formatCalculationDisplay()}
           </div>
-        )}
+          {/* Current result display */}
+          <div className="text-white text-3xl font-mono font-bold min-h-[3rem] overflow-hidden text-right">
+            {display}
+          </div>
+        </div>
+
+        {/* Button Grid */}
+        <div className="grid grid-cols-4 gap-3">
+          {/* Row 1 */}
+          <Button 
+            variant="secondary" 
+            onClick={clear} 
+            className="h-14 bg-red-500/80 hover:bg-red-600/80 text-white border-white/20 backdrop-blur-sm font-semibold"
+          >
+            C
+          </Button>
+          <Button 
+            variant="secondary" 
+            onClick={clearEntry} 
+            className="h-14 bg-orange-500/80 hover:bg-orange-600/80 text-white border-white/20 backdrop-blur-sm font-semibold"
+          >
+            CE
+          </Button>
+          <Button 
+            variant="secondary" 
+            onClick={() => inputOperation('÷')} 
+            className="h-14 bg-blue-500/80 hover:bg-blue-600/80 text-white border-white/20 backdrop-blur-sm font-semibold"
+          >
+            ÷
+          </Button>
+          <Button 
+            variant="secondary" 
+            onClick={() => inputOperation('×')} 
+            className="h-14 bg-blue-500/80 hover:bg-blue-600/80 text-white border-white/20 backdrop-blur-sm font-semibold"
+          >
+            ×
+          </Button>
+
+          {/* Row 2 */}
+          <Button variant="outline" onClick={() => inputDigit('7')} className="h-14 bg-white/20 hover:bg-white/30 text-white border-white/30 backdrop-blur-sm font-semibold">7</Button>
+          <Button variant="outline" onClick={() => inputDigit('8')} className="h-14 bg-white/20 hover:bg-white/30 text-white border-white/30 backdrop-blur-sm font-semibold">8</Button>
+          <Button variant="outline" onClick={() => inputDigit('9')} className="h-14 bg-white/20 hover:bg-white/30 text-white border-white/30 backdrop-blur-sm font-semibold">9</Button>
+          <Button 
+            variant="secondary" 
+            onClick={() => inputOperation('-')} 
+            className="h-14 bg-blue-500/80 hover:bg-blue-600/80 text-white border-white/20 backdrop-blur-sm font-semibold"
+          >
+            -
+          </Button>
+
+          {/* Row 3 */}
+          <Button variant="outline" onClick={() => inputDigit('4')} className="h-14 bg-white/20 hover:bg-white/30 text-white border-white/30 backdrop-blur-sm font-semibold">4</Button>
+          <Button variant="outline" onClick={() => inputDigit('5')} className="h-14 bg-white/20 hover:bg-white/30 text-white border-white/30 backdrop-blur-sm font-semibold">5</Button>
+          <Button variant="outline" onClick={() => inputDigit('6')} className="h-14 bg-white/20 hover:bg-white/30 text-white border-white/30 backdrop-blur-sm font-semibold">6</Button>
+          <Button 
+            variant="secondary" 
+            onClick={() => inputOperation('+')} 
+            className="h-14 bg-blue-500/80 hover:bg-blue-600/80 text-white border-white/20 backdrop-blur-sm font-semibold"
+          >
+            +
+          </Button>
+
+          {/* Row 4 */}
+          <Button variant="outline" onClick={() => inputDigit('1')} className="h-14 bg-white/20 hover:bg-white/30 text-white border-white/30 backdrop-blur-sm font-semibold">1</Button>
+          <Button variant="outline" onClick={() => inputDigit('2')} className="h-14 bg-white/20 hover:bg-white/30 text-white border-white/30 backdrop-blur-sm font-semibold">2</Button>
+          <Button variant="outline" onClick={() => inputDigit('3')} className="h-14 bg-white/20 hover:bg-white/30 text-white border-white/30 backdrop-blur-sm font-semibold">3</Button>
+          <Button 
+            variant="default" 
+            onClick={performCalculation} 
+            className="row-span-2 h-auto bg-green-600/80 hover:bg-green-700/80 text-white border-white/20 backdrop-blur-sm font-semibold"
+          >
+            =
+          </Button>
+
+          {/* Row 5 */}
+          <Button variant="outline" onClick={() => inputDigit('0')} className="col-span-2 h-14 bg-white/20 hover:bg-white/30 text-white border-white/30 backdrop-blur-sm font-semibold">0</Button>
+          <Button variant="outline" onClick={() => inputDigit('.')} className="h-14 bg-white/20 hover:bg-white/30 text-white border-white/30 backdrop-blur-sm font-semibold">.</Button>
+        </div>
+
+        {/* Hidden hint for testing */}
+        <div className="text-xs text-white/40 text-center mt-6 opacity-50">
+          Try: 777+777=
+        </div>
+
+        {/* Hidden Meanings Preview */}
+        <div className="mt-8 border-t border-white/20 pt-6">
+          <div className="flex items-center justify-between mb-4">
+            <h3 className="text-sm font-medium text-white">Hidden Patterns</h3>
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => setShowMeanings(!showMeanings)}
+              className="h-8 w-8 p-0 text-white hover:bg-white/20"
+            >
+              {showMeanings ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+            </Button>
+          </div>
+          
+          {showMeanings && (
+            <div className="space-y-3">
+              {hiddenMeanings.map((item, index) => (
+                <div key={index} className="bg-white/10 backdrop-blur-sm border border-white/20 p-3 rounded-lg text-xs">
+                  <span className="font-mono text-blue-300">{item.pattern}</span>
+                  <span className="text-white/80 ml-2">→ {item.meaning}</span>
+                  <span className="text-white/60 ml-2">(shows: {item.fakeResult})</span>
+                </div>
+              ))}
+              <div className="text-xs text-white/60 text-center mt-3 italic">
+                Enter these patterns to see fake results and trigger hidden features
+              </div>
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );
