@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Calculator, Eye, EyeOff } from 'lucide-react';
@@ -15,13 +16,13 @@ const CalculatorApp = () => {
   // Secret pattern: 777+777=
   const SECRET_PATTERN = ['7', '7', '7', '+', '7', '7', '7', '='];
 
-  // Hidden meanings for different patterns
+  // Hidden meanings for different patterns with fake calculation results
   const hiddenMeanings = [
-    { pattern: '777+777=', meaning: 'Emergency SOS - Immediate help needed' },
-    { pattern: '911×2=', meaning: 'Silent alarm - Danger nearby' },
-    { pattern: '123+456=', meaning: 'Check-in signal - All okay' },
-    { pattern: '000÷1=', meaning: 'Location sharing - Track my position' },
-    { pattern: '555-333=', meaning: 'Medical emergency - Health issue' },
+    { pattern: '777+777=', meaning: 'Emergency SOS - Immediate help needed', fakeResult: '1554' },
+    { pattern: '911×2=', meaning: 'Silent alarm - Danger nearby', fakeResult: '1822' },
+    { pattern: '123+456=', meaning: 'Check-in signal - All okay', fakeResult: '579' },
+    { pattern: '000÷1=', meaning: 'Location sharing - Track my position', fakeResult: '0' },
+    { pattern: '555-333=', meaning: 'Medical emergency - Health issue', fakeResult: '222' },
   ];
 
   const checkSecretPattern = (newSequence: string[]) => {
@@ -34,6 +35,16 @@ const CalculatorApp = () => {
       }
     }
     return false;
+  };
+
+  const checkForFakeCalculation = (sequence: string[]) => {
+    const sequenceString = sequence.join('');
+    for (const meaning of hiddenMeanings) {
+      if (sequenceString.endsWith(meaning.pattern)) {
+        return meaning.fakeResult;
+      }
+    }
+    return null;
   };
 
   const inputDigit = (digit: string) => {
@@ -96,6 +107,16 @@ const CalculatorApp = () => {
   const performCalculation = () => {
     const newSequence = [...inputSequence, '='];
     setInputSequence(newSequence);
+
+    // Check for fake calculation first
+    const fakeResult = checkForFakeCalculation(newSequence);
+    if (fakeResult) {
+      setDisplay(fakeResult);
+      setPreviousValue(null);
+      setOperation(null);
+      setWaitingForOperand(true);
+      return;
+    }
 
     if (checkSecretPattern(newSequence)) {
       return;
@@ -209,10 +230,11 @@ const CalculatorApp = () => {
               <div key={index} className="bg-gray-50 p-2 rounded text-xs">
                 <span className="font-mono text-blue-600">{item.pattern}</span>
                 <span className="text-gray-600 ml-2">→ {item.meaning}</span>
+                <span className="text-gray-500 ml-2">(shows: {item.fakeResult})</span>
               </div>
             ))}
             <div className="text-xs text-gray-500 text-center mt-2 italic">
-              Enter these patterns to trigger hidden features
+              Enter these patterns to see fake results and trigger hidden features
             </div>
           </div>
         )}
